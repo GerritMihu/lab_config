@@ -1,0 +1,19 @@
+myhosts:
+  hosts:
+    my_host_01:
+      ansible_host: 192.168.129.150
+    my_host_02:
+      ansible_host: 192.168.129.151
+    my_host_03:
+      ansible_host: 192.168.129.152
+    my_host_04:
+      ansible_host: 192.168.129.153
+    my_host_05:
+      ansible_host: 192.168.129.154
+    my_host_06:
+      ansible_host: 192.168.129.155
+    my_host_07:
+      ansible_host: 192.168.129.156
+    my_host_08:
+      ansible_host: 192.168.129.157
+
