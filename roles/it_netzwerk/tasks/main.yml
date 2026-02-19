@@ -1,0 +1,48 @@
+---
+- name: IT/Netzwerk-Pakete installieren
+  apt:
+    name:
+      - wireshark
+      - nmap
+      - tcpdump
+      - ethtool
+      - iperf3
+      - minicom
+      - virtualbox
+      - qemu
+      - lxc
+      - docker.io
+      - docker-compose
+      - bind9
+      - isc-dhcp-server
+      - apache2
+      - nginx
+      - mysql-server
+      - postgresql
+      - php
+      - samba
+      - openvpn
+      - snort
+      - suricata
+      - zabbix-agent
+      - nagios3
+      - grafana
+      - prometheus
+    state: present
+  tags: it_pakete
+
+- name: Docker-Benutzer hinzufügen
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+  tags: docker_user
+
+- name: Docker-Compose-Projektvorlage kopieren
+  copy:
+    src: docker/
+    dest: /home/{{ ansible_user }}/docker_projekte/
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  tags: docker_projekt
+

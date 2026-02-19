@@ -1,0 +1,50 @@
+---
+- name: Elektronik-Pakete installieren
+  apt:
+    name:
+      - kicad
+      - kicad-libraries
+      - kicad-packages3d
+      - ngspice
+      - gerbv
+      - qelectrotech
+      - ltsice
+      - sigrok
+      - pulseview
+      - scopy
+      - octave
+      - scilab
+      - arduino
+      - avrdude
+      - python3-pip
+    state: present
+  tags: elektronik_pakete
+
+- name: PlatformIO installieren
+  pip:
+    name: platformio
+    executable: pip3
+  tags: platformio
+
+- name: PrusaSlicer installieren (Debian-Paket)
+  apt:
+    deb: https://github.com/prusa3d/PrusaSlicer/releases/download/version_2.7.1/PrusaSlicer_2.7.1+linux.deb
+  when: ansible_architecture == "x86_64"
+  tags: prusa_slicer
+
+- name: Benutzerdefinierte KiCad-Bibliotheken kopieren
+  copy:
+    src: kicad/
+    dest: /usr/share/kicad/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: kicad_bib
+
+- name: PlatformIO-Beispielprojekt kopieren
+  copy:
+    src: platformio/blink/
+    dest: /home/{{ ansible_user }}/platformio_projekte/blink/
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  tags: platformio_projekt

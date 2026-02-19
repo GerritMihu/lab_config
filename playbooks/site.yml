@@ -34,3 +34,8 @@
     - role: common
     - role: kde
     - role: vscode
+    - role: desktop
+    - role: server
+    - role: elektronik
+    - role: it_netzwerk
+    - role: mechatronik
