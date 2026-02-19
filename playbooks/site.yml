@@ -1,0 +1,36 @@
+---
+- name: Lab-Clients standardisieren (Debian Trixie + KDE)
+  hosts: localhost
+  connection: local
+  become: true
+
+  vars_files:
+    - ../roles/vscode/vars/extensions.yml
+
+  vars:
+    lab_packages:
+      - git
+      - curl
+      - htop
+      - unattended-upgrades
+      # KDE-spezifisch, falls nicht vorhanden:
+      - plasma-workspace
+      - plasma-desktop
+      - kde-config-gtk-style
+      - plasma-widgets-addons
+
+  tasks:
+    - name: APT-Cache aktualisieren
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Basis-Pakete installieren
+      apt:
+        name: "{{ lab_packages }}"
+        state: present
+
+  roles:
+    - role: common
+    - role: kde
+    - role: vscode

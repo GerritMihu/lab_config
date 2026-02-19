@@ -1,0 +1,11 @@
+[Unit]
+Description=Pull lab config via Ansible (GitHub)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/ansible-pull -U https://github.com/gerritmihu/lab-config.git   -C main -i localhost, playbooks/site.yml -e "hostname=%H"
+WorkingDirectory=/var/lib/lab-config
+User=root
+Group=root

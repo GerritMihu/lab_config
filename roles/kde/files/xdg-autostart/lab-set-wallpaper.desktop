@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Lab Wallpaper setzen
+Exec=/usr/local/bin/lab-set-wallpaper.sh
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=2

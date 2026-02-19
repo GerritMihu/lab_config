@@ -1,0 +1,52 @@
+---
+- name: Microsoft VS Code Repo-Key installieren
+  shell: |
+    set -e
+    install -m 0755 -d /etc/apt/keyrings
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/keyrings/ms_vscode_key.gpg
+    chmod go+r /etc/apt/keyrings/ms_vscode_key.gpg
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: VS Code APT-Repo hinzufügen
+  copy:
+    dest: /etc/apt/sources.list.d/vscode.list
+    mode: '0644'
+    content: |
+      deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/ms_vscode_key.gpg] https://packages.microsoft.com/repos/code stable main
+
+- name: APT-Cache aktualisieren (VS Code)
+  apt:
+    update_cache: yes
+
+- name: VS Code installieren
+  apt:
+    name: code
+    state: present
+
+- name: VS Code Default-Settings für neue Nutzer in /etc/skel
+  copy:
+    dest: /etc/skel/.config/Code/User/settings.json
+    mode: '0644'
+    content: |
+      {
+        "editor.tabSize": 2,
+        "files.autoSave": "afterDelay",
+        "workbench.colorTheme": "Default Dark Modern",
+        "update.mode": "none"
+      }
+
+- name: VS Code Extensions installieren (best effort)
+  shell: |
+    set -e
+    if ! command -v code >/dev/null; then
+      echo "VS Code CLI nicht gefunden" >&2
+      exit 0
+    fi
+    for ext in {{ vscode_extensions | join(' ') }}; do
+      echo "Installiere $ext"
+      code --install-extension "$ext" --force || true
+    done
+  args:
+    executable: /bin/bash

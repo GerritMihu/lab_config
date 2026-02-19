@@ -1,0 +1,27 @@
+---
+- name: Unattended Upgrades konfigurieren
+  copy:
+    dest: /etc/apt/apt.conf.d/51unattended-upgrades
+    mode: '0644'
+    content: |
+      Unattended-Upgrade::Mail "root";
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Allowed-Origins {
+        "${distro_id}:${distro_codename}-security";
+        "${distro_id}:${distro_codename}-updates";
+      };
+
+- name: Service neu starten
+  service:
+    name: unattended-upgrades
+    state: restarted
+
+# Optional: apt-cacher-ng Proxy (Server_IP anpassen)
+# - name: APT Proxy setzen
+#   copy:
+#     dest: /etc/apt/apt.conf.d/01proxy
+#     content: |
+#       Acquire::HTTP::Proxy "http://10.0.0.10:3142";
+#       Acquire::HTTPS::Proxy "false";
+#     mode: '0644'
