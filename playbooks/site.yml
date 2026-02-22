@@ -1,6 +1,6 @@
 ---
 - name: Lab-Clients standardisieren (Debian Trixie + KDE)
-  hosts: localhost
+  hosts: all
   connection: local
   become: true
 

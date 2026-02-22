@@ -5,13 +5,10 @@
       - kicad
       - kicad-libraries
       - kicad-packages3d
-      - ngspice
       - gerbv
       - qelectrotech
-      - ltsice
       - sigrok
       - pulseview
-      - scopy
       - octave
       - scilab
       - arduino
@@ -25,12 +22,6 @@
     name: platformio
     executable: pip3
   tags: platformio
-
-- name: PrusaSlicer installieren (Debian-Paket)
-  apt:
-    deb: https://github.com/prusa3d/PrusaSlicer/releases/download/version_2.7.1/PrusaSlicer_2.7.1+linux.deb
-  when: ansible_architecture == "x86_64"
-  tags: prusa_slicer
 
 - name: Benutzerdefinierte KiCad-Bibliotheken kopieren
   copy:
