@@ -1,0 +1,20 @@
+---
+all:
+  children:
+    workshop_pcs:
+      children:
+        kde_pcs:
+          hosts:
+            ws-mechatronik-01:
+              ansible_host: 192.168.129.101
+            ws-mechatronik-02:
+              ansible_host: 192.168.129.102
+        networking_pcs:
+          hosts:
+            ws-network-01:
+              ansible_host: 192.168.129.201
+    proxmox_servers:
+      hosts:
+        proxmox-01:
+          ansible_host: 192.168.129.25
+          apt_proxy_enabled: true  # Nur dieser Host nutzt den Proxy

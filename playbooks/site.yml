@@ -31,9 +31,9 @@
         state: present
 
   roles:
-    - role: common
-    - role: kde
-    - role: vscode
-    - role: elektronik
-    - role: it_netzwerk
-    - role: mechatronik
+    - common
+    - kde
+    - vscode
+    - elektronik
+    - it_netzwerk
+    - mechatronik
