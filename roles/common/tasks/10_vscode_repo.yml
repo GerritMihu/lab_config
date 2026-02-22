@@ -1,0 +1,62 @@
+---
+# Bereinigt alte .list-Einträge, installiert Key, legt Deb822-Quelle an.
+# Getestet auf Debian Trixie.
+
+- name: (VS Code) Legacy .list-Dateien entfernen, um Signed-By-Konflikte zu vermeiden
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/apt/sources.list.d/vscode.list
+    - /etc/apt/sources.list.d/ms-vscode.list
+    - /etc/apt/sources.list.d/microsoft-vscode.list
+  tags: [vscode_repo]
+
+- name: (VS Code) Hilfspakete für Key-Handling installieren
+  ansible.builtin.apt:
+    name:
+      - wget
+      - gpg
+      - ca-certificates
+    state: present
+    update_cache: yes
+  tags: [vscode_repo]
+
+- name: (VS Code) Microsoft ASCII-Key laden
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /usr/share/keyrings/microsoft.asc
+    mode: '0644'
+  tags: [vscode_repo]
+
+- name: (VS Code) Key dearmoren -> /usr/share/keyrings/microsoft.gpg
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/microsoft.gpg /usr/share/keyrings/microsoft.asc
+    creates: /usr/share/keyrings/microsoft.gpg
+  tags: [vscode_repo]
+
+- name: (VS Code) ASCII-Key aufräumen
+  ansible.builtin.file:
+    path: /usr/share/keyrings/microsoft.asc
+    state: absent
+  tags: [vscode_repo]
+
+# Deb822-Quelle in /etc/apt/sources.list.d/vscode.sources
+# Entspricht der offiziellen Anleitung, nur als Deb822 umgesetzt.
+- name: (VS Code) Deb822-Source verwalten
+  ansible.builtin.deb822_repository:
+    name: vscode
+    types: [deb]
+    uris: https://packages.microsoft.com/repos/code
+    suites: [stable]
+    components: [main]
+    architectures: [amd64, arm64, armhf]
+    signed_by: /usr/share/keyrings/microsoft.gpg
+    state: present
+    enabled: true
+  tags: [vscode_repo]
+
+- name: apt-Cache aktualisieren (nach Repo-Änderungen)
+  ansible.builtin.apt:
+    update_cache: yes
+  tags: [vscode_repo]

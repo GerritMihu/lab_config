@@ -1,0 +1,7 @@
+# roles/common/tasks/05_acl.yml
+---
+- name: POSIX ACL-Werkzeuge installieren (für become_user ohne Root)
+  ansible.builtin.apt:
+    name: acl
+    state: present
+    update_cache: yes

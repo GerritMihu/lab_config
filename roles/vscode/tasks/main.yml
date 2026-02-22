@@ -1,33 +1,92 @@
 ---
-- name: Verzeichnis für APT-Schlüssel erstellen
-  file:
+# ===============================
+# VS Code Installation (Debian 12/13 kompatibel)
+# ===============================
+
+- name: Sicherstellen dass /etc/apt/keyrings existiert
+  ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
+  become: true
 
-- name: Microsoft GPG-Schlüssel herunterladen
-  get_url:
+
+# Alte Repo-Dateien entfernen (verhindert Signed-By Konflikte)
+- name: Alte VSCode Repo-Dateien entfernen
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/apt/sources.list.d/vscode.list
+    - /etc/apt/sources.list.d/vscode.sources
+    - /etc/apt/sources.list.d/packages-microsoft-prod.list
+    - /etc/apt/sources.list.d/packages-microsoft-prod.sources
+  become: true
+
+
+# Microsoft Key herunterladen
+- name: Microsoft GPG Key herunterladen
+  ansible.builtin.get_url:
     url: https://packages.microsoft.com/keys/microsoft.asc
-    dest: /etc/apt/keyrings/microsoft.gpg
+    dest: /tmp/microsoft.asc
     mode: '0644'
+  become: true
 
+
+# Key dearmoren (wichtig!)
+- name: Microsoft GPG Key dearmoren
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg /tmp/microsoft.asc
+  args:
+    creates: /etc/apt/keyrings/microsoft.gpg
+  become: true
+
+
+# VS Code Repository hinzufügen
 - name: VS Code Repository hinzufügen
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main"
-    state: present
     filename: vscode
-    update_cache: yes
+    state: present
+  become: true
 
+
+# APT Cache aktualisieren
+- name: APT Cache aktualisieren
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
+
+# VS Code installieren
 - name: VS Code installieren
-  apt:
+  ansible.builtin.apt:
     name: code
     state: present
+  become: true
 
-- name: Standard-VS-Code-Extensions installieren
-  command: "code --install-extension {{ item }}"
+
+- name: Prüfen, ob setfacl vorhanden ist (für become_user ohne Root)
+  ansible.builtin.command: command -v setfacl
+  register: _setfacl
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: POSIX ACLs bereitstellen (acl-Paket installieren, falls nötig)
+  ansible.builtin.apt:
+    name: acl
+    state: present
+    update_cache: yes
+  when: _setfacl.rc != 0
+  become: true
+
+# ===============================
+# Extensions installieren
+# ===============================
+- name: VS Code Extensions installieren (als Ziel-User via runuser)
+  ansible.builtin.command:
+    cmd: runuser -l {{ vscode_user | default('ap14') }} -c "/usr/bin/code --install-extension {{ item }} --force"
   loop: "{{ vscode_extensions }}"
+  become: true            # wir bleiben root und wechseln innerhalb des Kommandos
   when: vscode_extensions is defined
-  become_user: ap14
-  environment:
-    DISPLAY: ":0"
-  ignore_errors: yes

@@ -1,0 +1,47 @@
+---
+- name: Diagnose VS Code Extension-Installation
+  hosts: ansible-test
+  gather_facts: false
+  become: true
+
+  vars:
+    target_user: "{{ vscode_user | default(ansible_env.SUDO_USER | default(ansible_user_id)) }}"
+
+  tasks:
+    - name: getent passwd für Ziel-User
+      command: getent passwd {{ target_user }}
+      register: getent_out
+      changed_when: false
+      failed_when: false
+
+    - name: Ergebnis anzeigen
+      debug:
+        msg: "{{ getent_out.stdout | default('kein passwd-Eintrag gefunden') }}"
+
+    - name: HOME/SHELL aus getent extrahieren (nur falls gefunden)
+      set_fact:
+        _home: "{{ (getent_out.stdout.split(':'))[5] }}"
+        _shell: "{{ (getent_out.stdout.split(':'))[6] }}"
+      when: getent_out.rc == 0
+
+    - name: Prüfen, ob runuser verfügbar ist
+      command: command -v runuser
+      register: has_runuser
+      changed_when: false
+      failed_when: has_runuser.rc != 0
+
+    - name: VS Code CLI-Version als Ziel-User testen
+      command: runuser -l {{ target_user }} -c "/usr/bin/code --version"
+      register: code_ver
+      changed_when: false
+      failed_when: false
+
+    - debug:
+        var: code_ver.stdout
+
+    # Optional: POSIX ACLs bereitstellen (hilfreich für andere become_user-Fälle)
+    - name: acl installieren (falls setfacl fehlt)
+      apt:
+        name: acl
+        state: present
+        update_cache: yes

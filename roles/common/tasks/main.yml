@@ -1,13 +1,22 @@
+
 ---
+- name: POSIX ACL vorbereiten
+  ansible.builtin.include_tasks: 05_acl.yml
+
+- name: VS Code Repository und Key vorbereiten
+  ansible.builtin.include_tasks: 10_vscode_repo.yml
+
 - name: Basis-Pakete installieren
-  apt:
+  ansible.builtin.apt:
     name:
+      - code            # VS Code aus dem MS-Repo
       - git
       - curl
       - vim
       - unattended-upgrades
       - apt-transport-https
       - ca-certificates
+      - gnupg2
     state: present
     update_cache: yes
 
