@@ -7,9 +7,9 @@
 ---
 ## **Zweck**
 Dieses Repo verwaltet die Konfiguration von **12 Workshop-PCs** (Debian 13 Trixie + KDE) für:
-- **Elektronik/Prototypenbau** (KiCad, PlatformIO, ESP32/RPi Pico)
+- **Elektronik und Netzwerktechnik** (KiCad, PlatformIO, ESP32/RPi Pico)
 - **IT und Netzwerktechnik** (Server-Administration, Troubleshooting)
-- **Mechatronik** (3D-Druck mit Klipper, Thermografie)
+- **Mechatronik** (3D-Druck mit Klipper, Elektronik)
 
 **Features:**
 ✅ `ansible-pull` (stündlich)
@@ -40,9 +40,7 @@ flowchart TD
     D --> D1[common]
     D --> D2[kde]
     D --> D3[vscode]
-    D --> D4["multiroom_audio"]
-    D --> D5["klipper"]
-    D --> D6["thermal_camera"]
+
 
     E --> E1[lab.jpg]
     E --> E2[printer.cfg]
@@ -50,6 +48,6 @@ flowchart TD
     F --> F1[setup_guide.md]
     F --> F2[exam_mode.md]
 
-    classDef neu fill:#f9f,stroke:#333;
-    class D4,D5,D6 neu
+
+
 
