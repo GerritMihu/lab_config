@@ -2,15 +2,7 @@
 - name: Mechatronik-Pakete installieren
   apt:
     name:
-      - flatcam
-      - pcb2gcode
-      - grbl
-      - linuxcnc
       - openscad
-      - slic3r
-      - pronterface
       - freecad
-      - cura
     state: present
   tags: mechatronik_pakete
-

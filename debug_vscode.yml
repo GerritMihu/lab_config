@@ -5,7 +5,8 @@
   become: true
 
   vars:
-    target_user: "{{ vscode_user | default(ansible_env.SUDO_USER | default(ansible_user_id)) }}"
+    target_user: "{{ vscode_user | default(ansible_env.SUDO_USER |
+     default(ansible_user_id)) }}"
 
   tasks:
     - name: getent passwd für Ziel-User
@@ -39,9 +40,9 @@
     - debug:
         var: code_ver.stdout
 
-    # Optional: POSIX ACLs bereitstellen (hilfreich für andere become_user-Fälle)
+    # Optional: POSIX ACLs bereitstellen
     - name: acl installieren (falls setfacl fehlt)
-      apt:
+      apt: yam
         name: acl
         state: present
-        update_cache: yes
+        update_cache: true

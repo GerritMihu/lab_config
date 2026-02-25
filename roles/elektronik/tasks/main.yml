@@ -14,28 +14,6 @@
       - arduino
       - avrdude
       - python3-pip
+      - pipx
     state: present
   tags: elektronik_pakete
-
-- name: PlatformIO installieren
-  pip:
-    name: platformio
-    executable: pip3
-  tags: platformio
-
-- name: Benutzerdefinierte KiCad-Bibliotheken kopieren
-  copy:
-    src: kicad/
-    dest: /usr/share/kicad/
-    owner: root
-    group: root
-    mode: '0644'
-  tags: kicad_bib
-
-- name: PlatformIO-Beispielprojekt kopieren
-  copy:
-    src: platformio/blink/
-    dest: /home/{{ ansible_user }}/platformio_projekte/blink/
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-  tags: platformio_projekt

@@ -8,8 +8,6 @@
       - ethtool
       - iperf3
       - minicom
-      - virtualbox
-      - qemu
       - lxc
       - docker.io
       - docker-compose
@@ -17,17 +15,12 @@
       - isc-dhcp-server
       - apache2
       - nginx
-      - mysql-server
       - postgresql
       - php
       - samba
       - openvpn
-      - snort
       - suricata
       - zabbix-agent
-      - nagios3
-      - grafana
-      - prometheus
     state: present
   tags: it_pakete
 
@@ -35,7 +28,7 @@
   user:
     name: "{{ ansible_user }}"
     groups: docker
-    append: yes
+    append: true
   tags: docker_user
 
 - name: Docker-Compose-Projektvorlage kopieren
@@ -45,4 +38,3 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
   tags: docker_projekt
-

@@ -4,4 +4,4 @@
   ansible.builtin.apt:
     name: acl
     state: present
-    update_cache: yes
+    update_cache: true

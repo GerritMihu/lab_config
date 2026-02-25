@@ -45,7 +45,8 @@
 # VS Code Repository hinzufügen
 - name: VS Code Repository hinzufügen
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg]
+          https://packages.microsoft.com/repos/code stable main"
     filename: vscode
     state: present
   become: true
@@ -54,7 +55,7 @@
 # APT Cache aktualisieren
 - name: APT Cache aktualisieren
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
   become: true
 
 
@@ -77,16 +78,18 @@
   ansible.builtin.apt:
     name: acl
     state: present
-    update_cache: yes
+    update_cache: true
   when: _setfacl.rc != 0
   become: true
 
 # ===============================
 # Extensions installieren
 # ===============================
-- name: VS Code Extensions installieren (als Ziel-User via runuser)
-  ansible.builtin.command:
-    cmd: runuser -l {{ vscode_user | default('ap14') }} -c "/usr/bin/code --install-extension {{ item }} --force"
-  loop: "{{ vscode_extensions }}"
-  become: true            # wir bleiben root und wechseln innerhalb des Kommandos
-  when: vscode_extensions is defined
+# - name: VS Code Extensions installieren (als Ziel-User via runuser)
+#  ansible.builtin.command:
+#    cmd: runuser -l {{ vscode_user | default('ap14') }} -c
+#         "/usr/bin/code --install-extension {{ item }} --force"
+#  loop: "{{ vscode_extensions }}"
+#  become: true
+#         # wir bleiben root und wechseln innerhalb des Kommandos
+#  when: vscode_extensions is defined

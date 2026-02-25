@@ -2,7 +2,8 @@
 # Bereinigt alte .list-Einträge, installiert Key, legt Deb822-Quelle an.
 # Getestet auf Debian Trixie.
 
-- name: (VS Code) Legacy .list-Dateien entfernen, um Signed-By-Konflikte zu vermeiden
+- name: (VS Code)Legacy .list-Dateien entfernen,
+        um Signed-By-Konflikte zu vermeiden
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
@@ -19,7 +20,7 @@
       - gpg
       - ca-certificates
     state: present
-    update_cache: yes
+    update_cache: true
   tags: [vscode_repo]
 
 - name: (VS Code) Microsoft ASCII-Key laden
@@ -31,7 +32,8 @@
 
 - name: (VS Code) Key dearmoren -> /usr/share/keyrings/microsoft.gpg
   ansible.builtin.command:
-    cmd: gpg --dearmor -o /usr/share/keyrings/microsoft.gpg /usr/share/keyrings/microsoft.asc
+    cmd: gpg --dearmor -o /usr/share/keyrings/microsoft.gpg
+        /usr/share/keyrings/microsoft.asc
     creates: /usr/share/keyrings/microsoft.gpg
   tags: [vscode_repo]
 
@@ -58,5 +60,5 @@
 
 - name: apt-Cache aktualisieren (nach Repo-Änderungen)
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
   tags: [vscode_repo]
