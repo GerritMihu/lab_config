@@ -1,0 +1,36 @@
+all:
+  children:
+    workshop_pcs:  # Gruppe für alle 8 Allzweck-PCs
+      hosts:
+        ap1:
+          ansible_host: 192.168.129.___  # ___ durch letzte Ziffer ersetzen
+          ansible_user: ap1
+          purpose: []  # Optional: z. B. ["elektronik", "it"]
+        ap2:
+          ansible_host: 192.168.129.___
+          ansible_user: ap2
+          purpose: []
+        ap3:
+          ansible_host: 192.168.129.___
+          ansible_user: ap3
+          purpose: []
+        ap4:
+          ansible_host: 192.168.129.___
+          ansible_user: ap4
+          purpose: []
+        ap5:
+          ansible_host: 192.168.129.___
+          ansible_user: ap5
+          purpose: []
+        ap6:
+          ansible_host: 192.168.129.___
+          ansible_user: ap6
+          purpose: []
+        ap7:
+          ansible_host: 192.168.129.___
+          ansible_user: ap7
+          purpose: []
+        ap8:
+          ansible_host: 192.168.129.___
+          ansible_user: ap8
+          purpose: []
