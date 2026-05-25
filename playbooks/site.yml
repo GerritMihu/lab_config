@@ -1,8 +1,8 @@
 ---
 - name: Lab-Clients standardisieren (Debian Trixie + KDE)
   hosts: all
-  connection: local
   become: true
+  gather_facts: true
 
   vars_files:
     - ../roles/vscode/vars/extensions.yml
